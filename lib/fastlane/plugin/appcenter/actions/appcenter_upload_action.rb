@@ -211,18 +211,30 @@ module Fastlane
 
         case response.status
         when 200...300
-          release = response.body
-          download_url = release['download_url']
+          info = connection.get do |req|
+            req.url("/#{release_url}")
+            req.headers['X-API-Token'] = api_token
+            req.headers['internal-request-source'] = "fastlane"
+          end
+          
+          case info.status
+          when 200...300
+            release = info.body
+            download_url = release['download_url']
 
-          UI.message("DEBUG: #{JSON.pretty_generate(release)}") if ENV['DEBUG']
+            UI.message("DEBUG: #{JSON.pretty_generate(release)}") if ENV['DEBUG']
 
-          Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK] = download_url
-          Actions.lane_context[SharedValues::APPCENTER_BUILD_INFORMATION] = release
+            Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK] = download_url
+            Actions.lane_context[SharedValues::APPCENTER_BUILD_INFORMATION] = release
 
-          UI.message("Public Download URL: #{download_url}") if download_url
-          UI.success("Release #{release['short_version']} was successfully distributed to group \"#{group_name}\"")
+            UI.message("Public Download URL: #{download_url}") if download_url
+            UI.success("Release #{release['short_version']} was successfully distributed to group \"#{group_name}\"")
 
-          release
+            release
+          else
+            UI.error("Error fetching information about release #{response.status}: #{response.body}")
+            false
+          end
         when 404
           UI.error("Not found, invalid distribution group name")
           false
