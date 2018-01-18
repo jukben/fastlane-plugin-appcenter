@@ -1,4 +1,8 @@
+
 # App Center `fastlane` plugin
+
+## Deprecated use https://github.com/Microsoft/fastlane-plugin-appcenter they fix the issue what I've solved in this fork. 💪
+
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-appcenter)
 [![Gem Version](https://badge.fury.io/rb/fastlane-plugin-appcenter.svg)](https://badge.fury.io/rb/fastlane-plugin-appcenter)
